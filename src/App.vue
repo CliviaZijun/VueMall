@@ -1,15 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+//import jsonp from 'jsonp'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    
+  },
+  data(){
+    return{
+
+    }
+  },
+  mounted(){
+   
   }
 }
 </script>
