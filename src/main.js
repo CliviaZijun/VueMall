@@ -1,4 +1,10 @@
-import { createApp } from 'vue'
+import Vue from 'vue'
+import router from './router'
 import App from './App.vue'
 
-createApp(App).mount('#app')
+Vue.config.productionTip = false
+
+new Vue({
+    router,//如果是import routers from './router' 这里就是router:routers
+    render:h=>h(App),
+}).$mount('#app')
