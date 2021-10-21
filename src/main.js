@@ -7,6 +7,11 @@ import VueAxios from 'vue-axios'
 */
 //组件
 import App from './App.vue'
+import env from './env'//自己的文件一定要写./ 否则会被认为是插件
+
+//根据环境变量获取不同的请求地址
+axios.defaults.baseURL = env.baseURL;
+
 //⭐在发请求的时候要设置一些基础值
 
 //根据前端的跨域方式做调整
@@ -14,7 +19,7 @@ import App from './App.vue'
 //cors或者jsonp：前后端域名不同时，基础要写成比如'http://www.baidu.com'的形式
 
 // /a/b : /api/a/b => /a/b因为有时候后端会觉得麻烦不想设置api
-axios.defaults.baseURL = '/api';
+axios.defaults.baseURL = '/api';//见vue.config.js
 //⭐为了用户体验，最好或者说一定要设置超时时间
 axios.defaults.timeout = 8000;
 
