@@ -160,6 +160,7 @@ export default{
                     //由于查询时每次只显示六个，我们可以：
                     //方法一：把pageSize修改为6
                     //pageSize:6
+                    
                 }
             }).then((res)=>{ //链式调用//这里的res看main.js，它实际上是response.data.data，也就是说不包含status。
                 //res.list;
@@ -217,7 +218,8 @@ export default{
                         background-size: contain;//填充
                         */
                         @include bgImg(16px,12px,'/imgs/icon-cart-checked.png');
-                        margin-right: 4px;           
+                        margin-right: 4px;   
+                        vertical-align: middle;//并列元素竖直方向对齐        
                     }
                     
                 }
@@ -306,6 +308,7 @@ export default{
                             box-shadow: 0px 7px 6px 0px rgba(0, 0, 0, 0.11);
                             z-index: 10;//?
                             transition: all 0.4s;
+                            background-color: $colorG;
                             .product{
                                 position: relative;
                                 float: left;
