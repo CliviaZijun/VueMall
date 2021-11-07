@@ -45,7 +45,6 @@
                         </li>
                     </ul>
                 </div>
-
                 <!-- 轮播功能 -->
                 <swiper v-bind:options="swiperOption"><!--所以就需要去script里面定义这个变量-->
                     <!--循环列表slideList定义好后就可以开始写下面的循环了-->
@@ -60,11 +59,20 @@
                     <div class="swiper-button-prev" slot="button-prev"></div>
                     <div class="swiper-button-next" slot="button-next"></div> 
                     -->
-                </swiper>
-                
+                </swiper>    
             </div>
-            <div class="ads-box"></div>
-            <div class="banner"></div>
+            <!-- 广告位 -->
+            <div class="ads-box">
+                <a :href="'/#/product/'+item.id" v-for="(item,index) in adsList" :key="index">
+                    <img :src="item.img" alt="">
+                </a>
+            </div>
+            <!-- banner -->
+            <div class="banner">
+                <a href="/#/product/30">
+                    <img src="/imgs/banner-1.png" alt="">
+                </a>
+            </div>
             <div class="product-box"></div>
         </div>
         <service-bar></service-bar>
@@ -107,7 +115,7 @@
                     effect:'cube',
                     cubeEffect: {
                         slideShadows: true,
-                        shadow: true,
+                        shadow: false,
                         shadowOffset: 100,
                         shadowScale: 0.6
                     }
@@ -169,6 +177,25 @@
                     [0,0,0,0],
                     [0,0,0,0],
                     [0,0,0,0]
+                ],
+                //定义广告位所需数组
+                adsList:[
+                    {
+                        id:33,
+                        img:'/imgs/ads/ads-1.png'
+                    },
+                    {
+                        id:48,
+                        img:'/imgs/ads/ads-2.jpg'
+                    },
+                    {
+                        id:45,
+                        img:'/imgs/ads/ads-3.png'
+                    },
+                    {
+                        id:47,
+                        img:'/imgs/ads/ads-4.jpg'
+                    },
                 ]
             }
         }
@@ -252,7 +279,6 @@
                     }
                 }
             }
-
             // 轮播功能样式
             .swiper-container{
                 //先控制高度
@@ -263,6 +289,24 @@
                     height: 100%;
                 }
             }
+        }
+        // 广告位样式
+        .ads-box{
+            /*
+            display: flex;
+            justify-content: space-between;
+            */
+            @include flex();
+            margin-top: 14px;
+            margin-bottom: 31px;
+            a{
+                height: 167px;
+                width: 296px;
+            }
+        }
+        // banner
+        .banner{
+            margin-bottom: 50px;
         }
     }
 </style>
