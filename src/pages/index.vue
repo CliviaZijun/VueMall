@@ -3,6 +3,7 @@
     <div class="index">
         <!--模块必须都在安全距离内，所以首先要用container包括一下-->
         <div class="container">
+            <!-- 轮播图 -->
             <div class="swiper-box">
                 <!-- 轮播菜单静态部分 -->
                 <div class="nav-menu">
@@ -73,7 +74,35 @@
                     <img src="/imgs/banner-1.png" alt="">
                 </a>
             </div>
-            <div class="product-box"></div>
+        </div>
+        <!-- 商品内容区 -->
+        <div class="product-box"> <!-- 因为设计稿中的灰色部分的宽是占整屏的，所以把它从container中拿出来 -->
+            <div class="container"> <!-- 嵌套一个container保证商品内容在安全区域内 -->
+                <h2>手机</h2>
+                <div class="wrapper">
+                    <div class="banner-left">
+                        <a href="/#/product/35"><img src="/imgs/mix-alpha.jpg" alt=""></a>
+                    </div>
+                    <div class="list-box">
+                        <!-- 两行商品，定义两个list -->
+                        <div class="list" v-for="(arr,index_i) in phoneList" v-bind:key="index_i">
+                            <div class="item" v-for="(item,index_j) in arr" :key="index_j">
+                                <span>新品</span><!-- tag一般做绝对定位 -->
+                                <div class="item-img">
+                                    <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/ab07e0fcbec3beb8b0f409db8bee8da4.jpg?thumb=1&w=500&h=500&f=webp&q=90" alt="">
+                                </div>
+                                <div class="item-info">
+                                    <h3>小米9</h3>
+                                    <p>骁龙855，索尼4800万超广角微距</p><!-- 描述信息一般用p标签 -->
+                                    <p class="price">2999元</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="list"></div>
+                    </div>
+                </div>
+            </div>
         </div>
         <service-bar></service-bar>
     </div>
@@ -196,7 +225,28 @@
                         id:47,
                         img:'/imgs/ads/ads-4.jpg'
                     },
+                ],
+                // 定义商品列表所需数组
+                phoneList:[
+                    // [1,1,1,1],[1,1,1,1]// 先占位，后面会以接口的方式传入数据
                 ]
+            }
+        },
+        // 交互
+        // 需要一个mounted来初始化商品
+        mounted(){
+            this.init();
+        },
+        methods:{
+            init(){
+                this.axios.get('/products',{
+                    params:{
+                        categoryID:100012,
+                        pageSize:8
+                    }
+                }).then((res)=>{
+                    this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]
+                })
             }
         }
     }
@@ -307,6 +357,93 @@
         // banner
         .banner{
             margin-bottom: 50px;
+        }
+        // 商品列表样式
+        .product-box{
+            background-color: $colorJ;
+            padding: 30px 0 50px;
+            // 先不定义高度，让内容自动把它撑开
+            h2{
+                font-size: $fontF;
+                height: 21px;
+                line-height: 21px;
+                color: $colorB;
+                margin-bottom: 20px;
+            }
+            .wrapper{
+                display: flex;
+                .banner-left{
+                    margin-right: 16px;
+                    img{
+                        width: 224px;
+                        height: 619px;
+                    }
+                }
+                .list-box{
+                    .list{
+                        // display: flex;
+                        // justify-content: space-between;
+                        @include flex();
+                        width: 986px;
+                        margin-bottom: 14px;
+                        &:last-child{
+                            margin-bottom: 0;
+                        }
+                        .item{
+                            width: 236px;
+                            height: 302px;
+                            background-color: $colorG;
+                            text-align: center;
+                            span{
+                                display: inline-block;//span本身是个行内元素，不设置inline-block的话背景颜色设置不上
+                                width: 67px;
+                                height: 24px;
+                                line-height: 24px;
+                                font-size: 14px;
+                                color: $colorG;
+                                font-weight: bold;
+                                // 因为有新品和秒杀两种，所以最好定义两种标签
+                                &.new-pro{
+                                    background-color: #7ECF68;
+                                }
+                                &.kill-pro{
+                                    background-color: #E82626;
+                                }
+                            }
+                            .item-img{
+                                img{
+                                    height: 195px;
+                                }                               
+                            }
+                            .item-info{
+                                h3{
+                                    font-size: $fontJ;
+                                    color: $colorB;
+                                    line-height: $fontJ;
+                                    font-weight: bold;
+                                }
+                                p{
+                                    color: $colorD;
+                                    line-height: 13px;
+                                    margin:6px auto 13px;
+                                }
+                                .price{
+                                    font-size: $fontJ;
+                                    color: #F20A0A;
+                                    font-weight: bold;
+                                    cursor: pointer;
+                                    &:after{
+                                        @include bgImg(22px,22px,'/imgs/icon-cart-hover.png');
+                                        content: '';//占位
+                                        margin-left: 5px;
+                                        vertical-align: middle;//元素齐平
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 </style>
