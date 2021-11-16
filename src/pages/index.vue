@@ -87,14 +87,17 @@
                         <!-- 两行商品，定义两个list -->
                         <div class="list" v-for="(arr,index_i) in phoneList" v-bind:key="index_i">
                             <div class="item" v-for="(item,index_j) in arr" :key="index_j">
-                                <span>新品</span><!-- tag一般做绝对定位 -->
+                                <!-- tag一般做绝对定位 -->
+                                <!-- <span v-bind:class="{'new-pro':index_j%2==0}">新品</span> -->
+                                <span v-if="index_j%2==0" class=new-pro>新品</span>
+                                <span v-if="index_j%2==1" class=kill-pro>秒杀</span>
                                 <div class="item-img">
-                                    <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/ab07e0fcbec3beb8b0f409db8bee8da4.jpg?thumb=1&w=500&h=500&f=webp&q=90" alt="">
+                                    <img v-bind:src="item.mainImage" alt="">
                                 </div>
                                 <div class="item-info">
-                                    <h3>小米9</h3>
-                                    <p>骁龙855，索尼4800万超广角微距</p><!-- 描述信息一般用p标签 -->
-                                    <p class="price">2999元</p>
+                                    <h3>{{item.name}}</h3>
+                                    <p>{{item.subtitle}}</p><!-- 描述信息一般用p标签 -->
+                                    <p class="price">{{item.price}}元</p>
                                 </div>
                                 
                             </div>
@@ -242,10 +245,10 @@
                 this.axios.get('/products',{
                     params:{
                         categoryID:100012,
-                        pageSize:8
+                        pageSize:12
                     }
                 }).then((res)=>{
-                    this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]
+                    this.phoneList = [res.list.slice(4,8),res.list.slice(8,12)]
                 })
             }
         }
@@ -398,8 +401,8 @@
                                 display: inline-block;//span本身是个行内元素，不设置inline-block的话背景颜色设置不上
                                 width: 67px;
                                 height: 24px;
-                                line-height: 24px;
                                 font-size: 14px;
+                                line-height: 24px;
                                 color: $colorG;
                                 font-weight: bold;
                                 // 因为有新品和秒杀两种，所以最好定义两种标签
@@ -413,6 +416,7 @@
                             .item-img{
                                 img{
                                     height: 195px;
+                                    width: 100%;
                                 }                               
                             }
                             .item-info{
