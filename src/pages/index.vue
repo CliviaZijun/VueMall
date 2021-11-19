@@ -97,7 +97,7 @@
                                 <div class="item-info">
                                     <h3>{{item.name}}</h3>
                                     <p>{{item.subtitle}}</p><!-- 描述信息一般用p标签 -->
-                                    <p class="price">{{item.price}}元</p>
+                                    <p class="price" @click="addCart(item.id)">{{item.price}}元</p>
                                 </div>
                                 
                             </div>
@@ -114,7 +114,10 @@
             sureText="查看购物车" 
             btnType="1" 
             modalType="middle" 
-            v-bind:showModal="showModal">  <!-- 动态绑定showModal，后续调接口 -->
+            v-bind:showModal="showModal"
+            v-on:submit="goToCart"
+            v-on:cancel="showModal=false"
+            >  <!-- 动态绑定showModal，后续调接口 -->
             <template v-slot:body> <!-- 新版的插槽调用要先用template包起来才能被嵌套 -->
                 <p>商品添加成功！</p>
             </template>
@@ -247,7 +250,8 @@
                 // 定义商品列表所需数组
                 phoneList:[
                     // [1,1,1,1],[1,1,1,1]// 先占位，后面会以接口的方式传入数据
-                ]
+                ],
+                showModal:false
             }
         },
         // 交互
@@ -266,6 +270,21 @@
                     res.list = res.list.slice(10,18);
                     this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]
                 })
+            },
+            addCart(){
+                this.showModal = true;
+                //下面暂时实现不了，后面再弄
+                // this.axios.post('/carts',{
+                //     productId: id,
+                //     selected: true
+                // }).then(()=>{
+
+                // }).catch(()=>{
+                //     this.showModal = true;
+                // })
+            },
+            goToCart(){
+                this.$router.push('/cart')
             }
         }
     }

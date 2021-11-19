@@ -1,31 +1,39 @@
 <template>
-    <div class="modal" v-show="showModal">  <!-- v-show也可以放在外面，但是这里因为要结合transition，所以最好放在里面，否则动画容易失效 -->
-        <!-- 遮罩层 -->
-        <div class="mask"></div>
-        <!-- 弹框 -->
-        <div class="modal-dialog">
-            <!-- 头部 -->
-            <div class="modal-header">
-                <span>标题</span>
-                <!-- javascript:; 防止跳转和刷新 -->
-                <a href="javascript:;" class="icon-close"></a>
-            </div>
-            <!-- 内容 -->
-            <div class="modal-body">
-                <!-- body要做成动态的，因为里面的东西不确定，可能是文本也可能是表单等 -->
-                <!-- 用插槽的方式才能做成动态的。  -->
-                <slot name="body"></slot>
-            </div>
-            <!-- 底部 -->
-            <div class="modal-footer">
-                <div class="btn-group">
-                    <!-- footer也要做成动态的，因为下方不一定有几个按钮 -->
-                    <a href="javascript:;" class="btn">确定</a>
-                    <a href="javascript:;" class="btn btn-default">取消</a>
+    <transition name="slide">
+        <div class="modal" v-show="showModal">  <!-- v-show也可以放在外面，但是这里因为要结合transition，所以最好放在里面，否则动画容易失效 -->
+            <!-- 遮罩层 -->
+            <div class="mask"></div>
+            <!-- 弹框 -->
+            <div class="modal-dialog">
+                <!-- 头部 -->
+                <div class="modal-header">
+                    <span>{{title}}</span>
+                    <!-- javascript:; 防止跳转和刷新 -->
+                    <a href="javascript:;" class="icon-close" v-on:click="$emit('cancel')"></a>
+                </div>
+                <!-- 内容 -->
+                <div class="modal-body">
+                    <!-- body要做成动态的，因为里面的东西不确定，可能是文本也可能是表单等 -->
+                    <!-- 用插槽的方式才能做成动态的。  -->
+                    <slot name="body"></slot>
+                </div>
+                <!-- 底部 -->
+                <div class="modal-footer">
+                    <!-- 先判断btn的类型 -->
+                    <!-- 只有确定 -->
+                    <a href="javascript:;" class="btn" v-if="btnType==1" v-on:click="$emit('submit')">{{sureText}}</a>  <!-- emit : 子组件向父组件传递 -->
+                    <!-- 只有取消 -->
+                    <a href="javascript:;" class="btn" v-if="btnType==2" v-on:click="$emit('cancel')">{{cancelText}}</a>
+                    <!-- 二者都有 -->
+                    <div class="btn-group" v-if="btnType==3">
+                        <!-- footer也要做成动态的，因为下方不一定有几个按钮 -->
+                        <a href="javascript:;" class="btn" v-on:click="$emit('submit')">{{sureText}}</a>
+                        <a href="javascript:;" class="btn btn-default" v-on:click="$emit('cancel')">{{cancelText}}</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </transition>
 </template>
 <script>
 // 定义参数

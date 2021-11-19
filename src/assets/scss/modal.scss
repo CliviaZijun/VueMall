@@ -1,11 +1,26 @@
 .modal{
-    z-index: 10;
     @include position(fixed); //加绝对定位，因为滑动的时候要保证框不动
+    z-index: 10;
+    // 指定动画过渡，否则动画无效果
+    transition: all .5s;
     .mask{
         @include position(fixed);
         background-color: $colorI;
         opacity: 0.5;
     }
+    // 定义动画 - 入场 (一定注意顺序，否则入场动效将失效)
+    &.slide-enter-active{
+        top:0;
+    }
+    &.slide-enter{
+        top:-100%;
+    }
+    // 定义动画 - 出场
+    // 由于top的默认值就是0，所以这里不需要设置slide-leave
+    &.slide-leave-active{
+        top:-100%;
+    }
+
     .modal-dialog{
         @include position(absolute,40%,50%,660px,auto);
         background-color: $colorG;
