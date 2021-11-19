@@ -108,6 +108,17 @@
             </div>
         </div>
         <service-bar></service-bar>
+        <!-- 定义一个Modal -->
+        <modal 
+            title="提示" 
+            sureText="查看购物车" 
+            btnType="1" 
+            modalType="middle" 
+            v-bind:showModal="showModal">  <!-- 动态绑定showModal，后续调接口 -->
+            <template v-slot:body> <!-- 新版的插槽调用要先用template包起来才能被嵌套 -->
+                <p>商品添加成功！</p>
+            </template>
+        </modal>
     </div>
 </template>
 <script>
@@ -116,12 +127,16 @@
     import {Swiper,SwiperSlide} from 'vue-awesome-swiper'
     //同时，样式也要引入，否则不会生效
     import 'swiper/css/swiper.css'
+
+    import Modal from './../components/Modal.vue'
+
     export default {
         name:'index',
         components:{
             Swiper,
             SwiperSlide,
-            ServiceBar
+            ServiceBar,
+            Modal
         },
         //在data()里面定义局部变量去承载return的一个object
         data(){
@@ -245,10 +260,11 @@
                 this.axios.get('/products',{
                     params:{
                         categoryID:100012,
-                        pageSize:12
+                        pageSize:18
                     }
                 }).then((res)=>{
-                    this.phoneList = [res.list.slice(4,8),res.list.slice(8,12)]
+                    res.list = res.list.slice(10,18);
+                    this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]
                 })
             }
         }

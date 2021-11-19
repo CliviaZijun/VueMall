@@ -1,0 +1,42 @@
+.modal{
+    z-index: 10;
+    @include position(fixed); //加绝对定位，因为滑动的时候要保证框不动
+    .mask{
+        @include position(fixed);
+        background-color: $colorI;
+        opacity: 0.5;
+    }
+    .modal-dialog{
+        @include position(absolute,40%,50%,660px,auto);
+        background-color: $colorG;
+        transform: translate(-50%,-50%);
+        .modal-header{
+            height: 60px;
+            background-color: $colorJ;
+            padding: 0 25px; //上下先设为0 然后利用line-height使其居中
+            line-height: 60px;
+            font-size: $fontI;
+            .icon-close{
+                // @include bgImg()❌// 由于原来的bgImg display是inline-block 而这里的要做定位，所以就不通用了
+                @include positionImg(absolute,23px,25px,14px,14px,'/imgs/icon-close.png');
+                // 移上去变大的动效
+                transition: transform .3s;
+                // 指定transform属性过渡0.3s
+                &:hover{
+                    transform: scale(1.5);
+                }
+            }
+        }
+        .modal-body{
+            padding: 42px 40px 54px;
+            font-size: $fontJ;
+        }
+        .modal-footer{
+            height: 82px;
+            line-height: 82px;
+            text-align: center;
+            background-color: $colorJ;
+        }
+
+    }
+}
