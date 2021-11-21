@@ -65,13 +65,17 @@
             <!-- 广告位 -->
             <div class="ads-box">
                 <a :href="'/#/product/'+item.id" v-for="(item,index) in adsList" :key="index">
-                    <img :src="item.img" alt="">
+                    <!-- <img v-bind:src="item.img" alt=""> -->
+                    <!-- 懒加载👇 -->
+                    <img v-lazy="item.img" alt="">
                 </a>
             </div>
             <!-- banner -->
             <div class="banner">
                 <a href="/#/product/30">
-                    <img src="/imgs/banner-1.png" alt="">
+                    <!-- <img src="/imgs/banner-1.png" alt=""> -->
+                    <!-- 懒加载👇 -->
+                    <img v-lazy="'/imgs/banner-1.png'" alt="">  <!-- 这里要注意，由于凡是指令后面跟的一定是变量，所以这里的地址要再用单引号引起来 -->
                 </a>
             </div>
         </div>
@@ -81,7 +85,11 @@
                 <h2>手机</h2>
                 <div class="wrapper">
                     <div class="banner-left">
-                        <a href="/#/product/35"><img src="/imgs/mix-alpha.jpg" alt=""></a>
+                        <a href="/#/product/35">
+                            <!-- <img src="/imgs/mix-alpha.jpg" alt=""> -->
+                            <!-- 懒加载👇 -->
+                            <img v-lazy="'/imgs/mix-alpha.jpg'" alt="">
+                        </a>
                     </div>
                     <div class="list-box">
                         <!-- 两行商品，定义两个list -->
@@ -92,7 +100,9 @@
                                 <span v-if="index_j%2==0" class=new-pro>新品</span>
                                 <span v-if="index_j%2==1" class=kill-pro>秒杀</span>
                                 <div class="item-img">
-                                    <img v-bind:src="item.mainImage" alt="">
+                                    <!-- <img v-bind:src="item.mainImage" alt=""> -->
+                                    <!-- 懒加载👇 -->
+                                    <img v-lazy="item.mainImage" alt="">
                                 </div>
                                 <div class="item-info">
                                     <h3>{{item.name}}</h3>

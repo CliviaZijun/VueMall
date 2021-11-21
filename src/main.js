@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import router from './router'
 import axios from 'axios'
+import VueLazyLoad from 'vue-lazyload'
 /*
 import VueAxios from 'vue-axios'
 */
@@ -60,9 +61,13 @@ axios.interceptors.response.use(function(response){
 //挂载到原型，这样在其他组件内部就可以使用this.axios进行访问了
 Vue.prototype.axios = axios
 /*
-//加载插件,类似NodeJS里面的APP.use,它可以应用一个中间件
 Vue.use(VueAxios,axios);
 */
+//加载插件,类似NodeJS里面的APP.use,它可以应用一个中间件
+Vue.use(VueLazyLoad,{
+    loading:'/imgs/loading-svg/loading-bars.svg'
+})
+
 //生产环境的提示，默认false，开启后会展示vue底层的一些info信息
 Vue.config.productionTip = false
 

@@ -43,7 +43,9 @@
                                 <li class="product" v-for="(item,index) in phoneList" :key="index">
                                     <a v-bind:href="'/#/product/'+item.id" target="_blank">
                                         <div class="pro-img">
-                                            <img :src="item.mainImage" :alt="item.subtitle">
+                                            <!-- <img :src="item.mainImage" :alt="item.subtitle"> -->
+                                            <!-- 懒加载👇 -->
+                                            <img v-lazy="item.mainImage" :alt="item.subtitle">
                                         </div>
                                         <div class="pro-name">{{item.name}}</div>
                                         <div class="pro-price">{{item.price | currency}}</div>
@@ -63,7 +65,9 @@
                                 <li class="product">
                                     <a href="" target="_blank">
                                         <div class="pro-img">
-                                            <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/6511d77270e94146c0b1f96b66d8cc58.png?thumb=1&w=400&h=275&f=webp&q=90" alt="">
+                                            <!-- <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/6511d77270e94146c0b1f96b66d8cc58.png?thumb=1&w=400&h=275&f=webp&q=90" alt=""> -->
+                                            <!-- 懒加载👇 -->
+                                            <img v-lazy="'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/6511d77270e94146c0b1f96b66d8cc58.png?thumb=1&w=400&h=275&f=webp&q=90'" alt="">
                                         </div>
                                         <div class="pro-name">Redmi智能电视X55 2022</div>
                                         <div class="pro-price">2999元</div>
@@ -72,7 +76,9 @@
                                 <li class="product">
                                     <a href="" target="_blank">
                                         <div class="pro-img">
-                                            <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/6511d77270e94146c0b1f96b66d8cc58.png?thumb=1&w=400&h=275&f=webp&q=90" alt="">
+                                            <!-- <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/6511d77270e94146c0b1f96b66d8cc58.png?thumb=1&w=400&h=275&f=webp&q=90" alt=""> -->
+                                            <!-- 懒加载👇 -->
+                                            <img v-lazy="'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/6511d77270e94146c0b1f96b66d8cc58.png?thumb=1&w=400&h=275&f=webp&q=90'" alt="">
                                         </div>
                                         <div class="pro-name">Redmi智能电视X65 2022</div>
                                         <div class="pro-price">3999元</div>
@@ -81,7 +87,9 @@
                                 <li class="product">
                                     <a href="" target="_blank">
                                         <div class="pro-img">
-                                            <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/8871821795310769c1d3896c99b12381.png?thumb=1&w=400&h=275&f=webp&q=90" alt="">
+                                            <!-- <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/8871821795310769c1d3896c99b12381.png?thumb=1&w=400&h=275&f=webp&q=90" alt=""> -->
+                                            <!-- 懒加载👇 -->
+                                            <img v-lazy="'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/8871821795310769c1d3896c99b12381.png?thumb=1&w=400&h=275&f=webp&q=90'" alt="">
                                         </div>
                                         <div class="pro-name">小米电视6 65" OLED</div>
                                         <div class="pro-price">6999元</div>
@@ -90,7 +98,9 @@
                                 <li class="product">
                                     <a href="" target="_blank">
                                         <div class="pro-img">
-                                            <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0a1ae5341d2dae66cd42566c60d2d666.png?thumb=1&w=400&h=275&f=webp&q=90" alt="">
+                                            <!-- <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0a1ae5341d2dae66cd42566c60d2d666.png?thumb=1&w=400&h=275&f=webp&q=90" alt=""> -->
+                                            <!-- 懒加载👇 -->
+                                            <img v-lazy="'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0a1ae5341d2dae66cd42566c60d2d666.png?thumb=1&w=400&h=275&f=webp&q=90'" alt="">
                                         </div>
                                         <div class="pro-name">小米电视 大师 77" OLED</div>
                                         <div class="pro-price">17999元</div>
@@ -99,7 +109,9 @@
                                 <li class="product">
                                     <a href="" target="_blank">
                                         <div class="pro-img">
-                                            <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/932b583c6eccd8aabfa0771f8a854940.jpg?thumb=1&w=400&h=275&f=webp&q=90" alt="">
+                                            <!-- <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/932b583c6eccd8aabfa0771f8a854940.jpg?thumb=1&w=400&h=275&f=webp&q=90" alt=""> -->
+                                            <!-- 懒加载👇 -->
+                                            <img v-lazy="'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/932b583c6eccd8aabfa0771f8a854940.jpg?thumb=1&w=400&h=275&f=webp&q=90'" alt="">
                                         </div>
                                         <div class="pro-name">小米透明电视</div>
                                         <div class="pro-price">39999元</div>
@@ -108,7 +120,9 @@
                                 <li class="product">
                                     <a href="" target="_blank">
                                         <div class="pro-img">
-                                            <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/8871821795310769c1d3896c99b12381.png?thumb=1&w=400&h=275&f=webp&q=90" alt="">
+                                            <!-- <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/8871821795310769c1d3896c99b12381.png?thumb=1&w=400&h=275&f=webp&q=90" alt=""> -->
+                                            <!-- 懒加载👇 -->
+                                            <img v-lazy="'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/8871821795310769c1d3896c99b12381.png?thumb=1&w=400&h=275&f=webp&q=90'" alt="">
                                         </div>
                                         <div class="pro-name">小米电视 大师 65英寸OLED</div>
                                         <div class="pro-price">9499元</div>
