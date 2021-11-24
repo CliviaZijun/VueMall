@@ -1,5 +1,6 @@
 //公共样式
 .container{
+    position: relative;
     width: 1226px;
     margin-left: auto;
     margin-right: auto;
@@ -8,4 +9,10 @@
 a img{
     width: 100%;
     height: 100%;
+}
+
+input{
+    outline: none;
+    box-sizing: border-box;//使得宽度包含了内外填充
+    font-size: 14px;
 }

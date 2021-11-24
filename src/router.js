@@ -5,6 +5,7 @@ import Home from './pages/home'// './pages/Home.vue'  .vue可以省略
 import Index from './pages/index'
 import Product from './pages/product'
 import Detail from './pages/detail'
+import Login from './pages/login'
 import Cart from './pages/cart'
 import Order from './pages/order'
 import OrderConfirm from './pages/orderConfirm'
@@ -53,6 +54,12 @@ export default new Router({
             ]
         },
         //由于购物车、订单等不需要nav-header&footer，所以不需要上面的根结构，需要另外的结构
+        // 登录
+        {
+            path:'/login',
+            name:'login',
+            component:Login
+        },
         //购物车
         {
             path:'/cart',
