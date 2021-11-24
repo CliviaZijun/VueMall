@@ -81,7 +81,7 @@ export default {
                         }
                     }
                     .input{
-                        // display: inline-block;
+                        display: inline-block;
                         width: 348px;
                         height: 50px;
                         border: 1px solid $colorH;
