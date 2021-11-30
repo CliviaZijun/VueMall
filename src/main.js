@@ -48,11 +48,17 @@ axios.defaults.timeout = 8000;
 //错误拦截:商城系统没有像后台管理系统那么多的表单，更多地是对返回值进行处理，所以这里只做错误拦截(response拦截器)不做请求的拦截（request拦截器）
 axios.interceptors.response.use(function(response){
     let res = response.data;//注意区分axios封装的response.data和我们自己的res.data
+    // 获取当前路径
+    let path = location.hash;//因为我们是哈希路由
     if(res.status == 0){//未报错
         return res.data;
     }else if(res.status == 10){//未登录的错误码
         //由于我们是哈希路由（带＃），所以路径要写带＃的完整路由
-        window.location.href = '/#/login';//注意这里要用window，this取不到只有在每个页面里才能用this
+        // window.location.href = '/#/login';//注意这里要用window，this取不到只有在每个页面里才能用this
+        // 改成👇
+        if(path != '#/index'){
+            window.location.href = '/#/login';
+        }
     }else{
         alert(res.msg);
         return Promise.reject(res);
