@@ -3,6 +3,7 @@ import Vue from 'vue'
 import router from './router'
 import axios from 'axios'
 import VueLazyLoad from 'vue-lazyload'
+import VueCookie from 'vue-cookie'
 /*
 import VueAxios from 'vue-axios'
 */
@@ -14,7 +15,7 @@ import App from './App.vue'
 //axios.defaults.baseURL = env.baseURL;
 
 //集成mockjs的开关
-const mock = true;
+const mock = false;
 //想mock的话
 if(mock){
     //require和import的区别：
@@ -54,6 +55,7 @@ axios.interceptors.response.use(function(response){
         window.location.href = '/#/login';//注意这里要用window，this取不到只有在每个页面里才能用this
     }else{
         alert(res.msg);
+        return Promise.reject(res);
     }
 });
 
@@ -67,7 +69,7 @@ Vue.use(VueAxios,axios);
 Vue.use(VueLazyLoad,{
     loading:'/imgs/loading-svg/loading-bars.svg'
 })
-
+Vue.use(VueCookie)
 //生产环境的提示，默认false，开启后会展示vue底层的一些info信息
 Vue.config.productionTip = false
 

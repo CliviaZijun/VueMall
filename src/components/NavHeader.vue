@@ -221,6 +221,7 @@ export default{
                     background-color: #FF6600;
                     text-align: center;//框内居中
                     color: #ffffff;
+                    margin-right: 0;
                     .icon-cart{
                         /*
                         //将span标签的长宽设置为icon的长宽，否则不显示
