@@ -24,13 +24,15 @@ export default {
   // 数据的拉取
   methods:{
     getUser(){//因为这里是App.vue是根组件，我们唯一能做的就是把这个数据保存下来，存储到vuex中去，然后再到NavHeader中把数据读出来就可以了
-      this.axios.get('/user').then(()=>{
-        //TODO: 保存到vuex里面
+      this.axios.get('/user').then((res)=>{
+        //保存到vuex里面
+        this.$store.dispatch('saveUserName',res.username);
       })
     },
     getCartCount(){
-      this.axios.get('/carts/products/sum').then(()=>{
-        //TODO: 保存到vuex里面
+      this.axios.get('/carts/products/sum').then((res)=>{
+        //保存到vuex里面
+        this.$store.dispatch('saveCartCount',res);//这里直接写res是因为这个接口只返回 商品总数 这一个值
       })
     }
   }

@@ -9,6 +9,7 @@ import VueAxios from 'vue-axios'
 */
 //组件
 import App from './App.vue'
+import store from './store' //index.js可以省略掉，因为它是入口，默认就是读取index.js
 //import env from './env'//自己的文件一定要写./ 否则会被认为是插件
 
 //根据环境变量获取不同的请求地址
@@ -80,6 +81,7 @@ Vue.use(VueCookie)
 Vue.config.productionTip = false
 
 new Vue({
+    store,
     router,//如果是import routers from './router' 这里就是router:routers
     render:h=>h(App),
 }).$mount('#app')
