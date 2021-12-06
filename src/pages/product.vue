@@ -36,11 +36,19 @@
             <div class="item-video">
                 <h2>60帧超慢动作摄影<br>慢慢回味每一瞬间的精彩</h2>
                 <p>后置960帧电影般超慢动作视频，将眨眼间的每秒展现得淋漓尽致！<br>更能AI 精准分析视频内容，15个场景智能匹配背景音效。</p>
-                <div class="video-bg" @click="showSlide = true"></div>
+                <!-- <div class="video-bg" @click="showSlide = true"></div> -->
+                <div class="video-bg" @click="showSlide = 'slideDown'"></div>
                 <div class="video-box">
-                    <div class="overlay" v-if="showSlide"></div> <!-- showSlide为true时，遮罩层出现；false时，遮罩层去除 -->
-                    <div class="video" v-bind:class="{'slide':showSlide}"> <!-- 不可以用v-if，动画效果会失效。用动态绑定的方式添加slide 这个class，当showSlide为true时就有这个class，false则无 -->
-                        <span class="icon-close" @click="showSlide = false"></span>
+                    <!-- <div class="overlay" v-if="showSlide"></div> showSlide为true时，遮罩层出现；false时，遮罩层去除 -->
+                    <div class="overlay" v-if="showSlide == 'slideDown'"></div> <!-- showSlide为slideDown时，遮罩层出现；否则，遮罩层去除 -->
+                    <!-- <div class="video" v-bind:class="{'slide':showSlide}"> 不可以用v-if，动画效果会失效。用动态绑定的方式添加slide 这个class，当showSlide为true时就有这个class，false则无 -->
+                    <div class="video" v-bind:class="showSlide"> 
+                        <!-- animation时这里就不能用class的方式了，绑定class时：通常是数组的方式去绑定，或者object的方式去绑定，
+                            transition方法就是用布尔值
+                            但是animation那里有三个值 '' slideUp slideDown ，所以这里我们就可以用数组 或者字符串，丢一个字符串进去，直接去绑定变量本身
+                         -->
+                        <!-- <span class="icon-close" @click="showSlide = false"></span> -->
+                        <span class="icon-close" @click="showSlide = 'slideUp'"></span>
                         <video src="/imgs/product/video.mp4" muted autoplay controls="controls"></video>  
                         <!-- 一般autoplay就可以实现自动播放了，但是这里可能因为兼容性问题，必须加上muted才能自动播放 
                                         ⭐官方文档上写了： Muted autoplay is always allowed 但autoplay有条件 -->
@@ -68,7 +76,8 @@
         },
         data(){
             return{
-                showSlide:false,//控制动画效果
+                // showSlide:false,//控制动画效果 //默认false，即无模态框
+                showSlide:'',//控制动画效果 //默认没有这个属性，可以控制它Down或Up
                 swiperOption:{
                     // 设置自动轮播
                     autoplay:true,
@@ -196,6 +205,30 @@
                         opacity: .4;
                         z-index: 10;
                     }
+                    @keyframes slideDown{
+                        // slideDown里面一般会有一个过渡
+                        // transition里面就是过渡，animation里面要用比例，从0%👉20%👉30%👉...👉100%，这个过程中属性要发生什么样的变化，循着什么样的路径、轨迹移动
+                        // 同时简单的效果也可以用from to，实现从哪到哪的效果。
+                        // 这里的下拉就是top从-50%到50%，所以用from to 即可满足
+                        from{
+                            top: -50% ;
+                            opacity: 0;
+                        }
+                        to{
+                            top: 50%;
+                            opacity: 1;
+                        }
+                    }
+                    @keyframes slideUp{
+                        from{
+                            top: 50% ;
+                            opacity: 1;
+                        }
+                        to{
+                            top: -50%;
+                            opacity: 0;
+                        }
+                    }
                     .video{
                         position: fixed;
                         top: -50%;
@@ -205,12 +238,21 @@
                         width: 1000px;
                         height: 536px;
                         opacity: 0;
-                        // 指定transition使slide生效
-                        transition:all .6s;
-                        &.slide{
+                        // // 指定transition使slide生效
+                        // transition:all .6s;
+                        // &.slide{
+                        //     top: 50%;
+                        //     opacity: 1;
+                        // }
+                        &.slideDown{
+                            animation: slideDown .6s linear;
                             top: 50%;
                             opacity: 1;
                         }
+                        &.slideUp{
+                            animation: slideUp .6s linear;
+                        }
+                        
                         video{
                             width: 100%;
                             height: 100%;//使之撑满整个容器
