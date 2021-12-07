@@ -57,6 +57,7 @@ export default {
         border-top: 1px solid $colorH;
         background-color: $colorG;
         width: 100%;
+        z-index: 10;
         &.is_fixed{
             position: fixed;
             top:0;

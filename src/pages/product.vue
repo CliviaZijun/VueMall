@@ -40,9 +40,10 @@
                 <p>后置960帧电影般超慢动作视频，将眨眼间的每秒展现得淋漓尽致！<br>更能AI 精准分析视频内容，15个场景智能匹配背景音效。</p>
                 <!-- <div class="video-bg" @click="showSlide = true"></div> -->
                 <div class="video-bg" @click="showSlide = 'slideDown'"></div>
-                <div class="video-box">
-                    <!-- <div class="overlay" v-if="showSlide"></div> showSlide为true时，遮罩层出现；false时，遮罩层去除 -->
-                    <div class="overlay" v-if="showSlide == 'slideDown'"></div> <!-- showSlide为slideDown时，遮罩层出现；否则，遮罩层去除 -->
+                <div class="video-box" v-show="showSlide"> <!-- 保证video-box这个类一直存在 -->
+                    <!-- <div class="overlay" v-if="showSlide"></div> showSlide为true时，遮罩层出现；false时，遮罩层去除 (transition)-->
+                    <!-- <div class="overlay" v-if="showSlide == 'slideDown'"></div> showSlide为slideDown时，遮罩层出现；否则，遮罩层去除 (animation)-->
+                    <div class="overlay"></div>
                     <!-- <div class="video" v-bind:class="{'slide':showSlide}"> 不可以用v-if，动画效果会失效。用动态绑定的方式添加slide 这个class，当showSlide为true时就有这个class，false则无 -->
                     <div class="video" v-bind:class="showSlide"> 
                         <!-- animation时这里就不能用class的方式了，绑定class时：通常是数组的方式去绑定，或者object的方式去绑定，
@@ -50,7 +51,7 @@
                             但是animation那里有三个值 '' slideUp slideDown ，所以这里我们就可以用数组 或者字符串，丢一个字符串进去，直接去绑定变量本身
                          -->
                         <!-- <span class="icon-close" @click="showSlide = false"></span> -->
-                        <span class="icon-close" @click="showSlide = 'slideUp'"></span>
+                        <span class="icon-close" @click="closeVideo"></span>
                         <video src="/imgs/product/video.mp4" muted autoplay controls="controls"></video>  
                         <!-- 一般autoplay就可以实现自动播放了，但是这里可能因为兼容性问题，必须加上muted才能自动播放 
                                         ⭐官方文档上写了： Muted autoplay is always allowed 但autoplay有条件 -->
@@ -110,6 +111,13 @@
             buy(){
                 let id = this.$route.params.id;
                 this.$router.push(`/detail/${id}`);
+            },
+            closeVideo(){
+                this.showSlide = 'slideUp';
+                // 当动画滑完后：
+                setTimeout(()=>{
+                    this.showSlide = '';
+                },600) //因为动画的过渡时间也差不多是600
             }
         }
     }
