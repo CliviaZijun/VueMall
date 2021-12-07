@@ -3,7 +3,7 @@
     <div class="nav-bar" :class="{'is_fixed':isFixed}">  <!-- 动态绑定isFixed方法，true就有，false就无，那么只需控制is_fixed这个样式 -->
         <div class="container"> <!-- 保障安全区域 -->
             <div class="pro-title">
-                小米8 透明探索版
+                {{title}}
             </div>
             <div class="pro-param">
                 <a href="javascript:;">概述</a><span>|</span>
@@ -19,6 +19,9 @@
 <script>
 export default {
     name:'nav-bar',
+    props:{
+        title:String //从父组件带到子组件，string类型。
+    },
     data(){
         return{
             // 返回一些吸顶所需变量

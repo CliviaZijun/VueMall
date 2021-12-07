@@ -1,23 +1,25 @@
 <template>
     <div class="product">
         <!-- 4. 引用组件 -->
-        <product-param title="小米8">
+        <product-param v-bind:title="product.name">
             <template v-slot:buy>
-                <button class="btn">立即购买</button>
+                <button class="btn" @click="buy">立即购买</button>
             </template>
         </product-param>
         <div class="content">
             <div class="item-bg">
-                <h2>小米8</h2>
-                <h3>8周年旗舰版</h3>
+                <h2>{{product.name}}</h2>
+                <h3>{{product.subtitle}}</h3>
                 <p>
+                    <!-- 没做接口，暂且写死 -->
                     <a href="javascript:;">全球首款双频 GPS</a><span>|</span>
                     <a href="javascript:;">骁龙845</a><span>|</span>
                     <a href="javascript:;">AI变焦双摄</a><span>|</span>
                     <a href="javascript:;">红外人脸识别</a>
                 </p>
                 <div class="price">
-                    <span>¥<em>2599</em><del>¥2999</del></span>
+                    <!-- <span>¥<em>2599</em><del>¥2999</del></span> 没做原价的接口，所以不要了-->
+                    <span>¥<em>{{product.price}}</em></span>
                 </div>
             </div>
             <div class="item-bg-2"></div>
@@ -31,7 +33,7 @@
                     <swiper-slide><img src="/imgs/product/gallery-6.jpg" alt=""></swiper-slide>
                     <div class="swiper-pagination" slot="pagination"></div>
                 </swiper>
-                <p class="desc">小米8 AI变焦双摄拍摄</p>
+                <p class="desc">{{product.name}} {{product.subtitle}}</p>
             </div>
             <div class="item-video">
                 <h2>60帧超慢动作摄影<br>慢慢回味每一瞬间的精彩</h2>
@@ -70,7 +72,6 @@
         components:{
             // 3. 加载组件
             ProductParam,
-
             Swiper,
             SwiperSlide
         },
@@ -78,6 +79,7 @@
             return{
                 // showSlide:false,//控制动画效果 //默认false，即无模态框
                 showSlide:'',//控制动画效果 //默认没有这个属性，可以控制它Down或Up
+                product:{}, //用于保存res商品信息
                 swiperOption:{
                     // 设置自动轮播
                     autoplay:true,
@@ -88,8 +90,26 @@
                         el:'.swiper-pagination',
                         clickable:true
                     }
-
                 }
+            }
+        },
+        mounted(){
+            this.getProductInfo();//调用数据
+        },
+        methods:{
+            getProductInfo(){
+                // 获取路由参数
+                let id = this.$route.params.id;
+                // 通过ID获取路由接口
+                // 链式调用获取产品信息，返回res，res对应商品信息，需要保存，所以在上面定义一个product对象用于保存数据
+                //因为id本身就是参数了，所以不需要再用POST传参了(?)
+                this.axios.get(`/products/${id}`).then((res)=>{ //由于地址是动态的，这里用字符串模板``(~) 或者 ➕ 链接的方式 
+                    this.product = res;
+                }) 
+            },
+            buy(){
+                let id = this.$route.params.id;
+                this.$router.push(`/detail/${id}`);
             }
         }
     }
