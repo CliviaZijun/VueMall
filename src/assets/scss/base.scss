@@ -16,3 +16,20 @@ input{
     box-sizing: border-box;//使得宽度包含了内外填充
     font-size: 14px;
 }
+
+.fl{
+    float: left;
+}
+
+.fr{
+    float: right;
+}
+
+.clearfix:before, .clearfix:after{
+    content: ' ';// 伪类要给一个占位
+    display: table;//?
+}
+// 清除浮动
+.clearfix:after{
+    clear:both;
+}

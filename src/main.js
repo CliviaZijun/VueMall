@@ -60,6 +60,8 @@ axios.interceptors.response.use(function(response){
         if(path != '#/index'){
             window.location.href = '/#/login';
         }
+        // 添加返回值，否则即便报错也依旧会进入.then()
+        return Promise.reject(res);
     }else{
         alert(res.msg);
         return Promise.reject(res);

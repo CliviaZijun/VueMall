@@ -281,17 +281,20 @@
                     this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]
                 })
             },
-            addCart(){
-                this.showModal = true;
-                //下面暂时实现不了，后面再弄
-                // this.axios.post('/carts',{
-                //     productId: id,
-                //     selected: true
-                // }).then(()=>{
-
-                // }).catch(()=>{
-                //     this.showModal = true;
-                // })
+            addCart(id){
+                // this.showModal = true;
+                // //下面暂时实现不了，后面再弄
+                ///*                 
+                this.axios.post('/carts',{
+                    productId: id,
+                    selected: true
+                }).then((res)=>{
+                    this.showModal = true; //弹框
+                    this.$store.dispatch('saveCartCount',res.cartTotalQuantity);//实时更新右上角购物车数量
+                }).catch(()=>{
+                    this.showModal = true;
+                }) 
+                //*/
             },
             goToCart(){
                 this.$router.push('/cart')
