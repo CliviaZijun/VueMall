@@ -260,46 +260,6 @@ export default{
                 align-items: center;
                 */
                 @include flex();
-                .header-logo{//可视化区域
-                    display: inline-block;
-                    width: 55px;
-                    height: 55px;
-                    background-color: #FF6600;
-                    a{
-                        display: inline-block;
-                        width: 110px;
-                        height: 55px;
-                        
-                        &:before{
-                            //content必须要有，是用来占位的，否则伪类就不起作用了
-                            content: ' ';
-                            /*
-                            display: inline-block;
-                            width: 55px;
-                            height: 55px;
-                            background:url('/imgs/mi-logo.png') no-repeat center;
-                            background-size: 55px;
-                            */
-                            @include bgImg(55px,55px,'/imgs/mi-logo.png',55px);
-                            transition: margin .2s;
-                        }
-                        &:after{
-                            content: ' ';
-                            /*
-                            display: inline-block;
-                            width: 55px;
-                            height: 55px;
-                            background:url('/imgs/mi-home.png') no-repeat center;
-                            background-size: 55px;
-                            */
-                            @include bgImg(55px,55px,'/imgs/mi-home.png',55px);
-                        }
-                        &:hover::before{
-                            margin-left: -55px;
-                            transition: margin .2s;
-                        }
-                    }
-                }
                 .header-menu{
                     display: inline-block;
                     width: 643px;
