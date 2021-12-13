@@ -13,17 +13,21 @@
                 <h2>{{title}}<slot name="tip"></slot></h2> <!-- 原来的span设置成插槽，因为其他页面没有这个span，只有title -->
             </div>
             <div class="username">
-                <a href="javascript:;">Clivia</a>
+                <a href="javascript:;">{{username}}</a>
             </div>
         </div>
     </div>
 </template>
 <script>
+import {mapState} from 'vuex'
 export default {
     name:'order-header',
     props:{
         title:String
-    }// 定义props，接收外部变量的组件
+    },// 定义props，接收外部变量的组件
+    computed:{
+        ...mapState(['username'])//封装了this.$store.state.username
+    }
 }
 </script>
 <style lang="scss">
