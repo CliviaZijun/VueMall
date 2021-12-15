@@ -4,6 +4,8 @@ import router from './router'
 import axios from 'axios'
 import VueLazyLoad from 'vue-lazyload'
 import VueCookie from 'vue-cookie'
+import { Message } from 'element-ui'//按需加载elementUI组件
+import 'element-ui/lib/theme-chalk/index.css'//按需加载了就不需要加index.css了
 /*
 import VueAxios from 'vue-axios'
 */
@@ -63,24 +65,31 @@ axios.interceptors.response.use(function(response){
         // 添加返回值，否则即便报错也依旧会进入.then()
         return Promise.reject(res);
     }else{
-        alert(res.msg);
+        // alert(res.msg);//改为使用elementUI组件👇
+        // Message.warning(res.msg);
+        this.$message.warning(res.msg);
         return Promise.reject(res);
     }
 });
 
 //注册
 //挂载到原型，这样在其他组件内部就可以使用this.axios进行访问了
-Vue.prototype.axios = axios
+Vue.prototype.axios = axios;
 /*
 Vue.use(VueAxios,axios);
 */
+// 使用prototype的方式引入elementUI
+Vue.prototype.$message = Message;
+
 //加载插件,类似NodeJS里面的APP.use,它可以应用一个中间件
+// Vue.use(Message);//不需要use就能生效
 Vue.use(VueLazyLoad,{
     loading:'/imgs/loading-svg/loading-bars.svg'
-})
-Vue.use(VueCookie)
+});
+Vue.use(VueCookie);
 //生产环境的提示，默认false，开启后会展示vue底层的一些info信息
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+
 
 new Vue({
     store,

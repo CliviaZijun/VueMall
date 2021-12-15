@@ -76,6 +76,7 @@ import OrderHeader from './../components/OrderHeader.vue'
 import NavFooter from './../components/NavFooter.vue'
 import ServiceBar from './../components/ServiceBar.vue'
 import Modal from './../components/Modal.vue'
+// import { Message } from 'element-ui'
 
 export default {
     name:'cart',
@@ -146,13 +147,17 @@ export default {
             // 商品数量加减
             if(type == '-'){ 
                 if(quantity == 1){
-                    alert("商品至少保留一件");//后续会用elementUI替换掉
+                    // alert("商品至少保留一件");//后续会用elementUI替换掉//👇
+                    // Message.warning('商品至少保留一件');
+                    this.$message.warning('商品至少保留一件');
                     return;
                 }
                 --quantity;
             }else if(type == '+'){
                 if(quantity > item.productStock){
-                    alert("购买数量不能超过库存数量");
+                    // alert("购买数量不能超过库存数量");//👇
+                    // Message.warning("购买数量不能超过库存数量");
+                    this.$message.warning("购买数量不能超过库存数量");
                     return;
                 }
                 ++quantity;
@@ -183,13 +188,17 @@ export default {
             }); 
             this.tempId = 0;
             this.showModal = false;
+            // Message.success("删除成功");
+            this.$message.success('删除成功');
         },
         // 购物车下单
         order(){
             // 方法1：
             let isCheck = this.list.every(item=>!item.productSelected);//没有任何商品被选中,返回布尔值
             if(isCheck){
-                alert("请选择一件商品");
+                // alert("请选择一件商品");//👇
+                // Message.warning("请选择一件商品");
+                this.$message.warning("请选择一件商品");
             }else{
                 this.$router.push('/order/confirm');
             }

@@ -37,6 +37,7 @@
     </div>
 </template>
 <script>
+// import { Message } from 'element-ui'
 export default {
     name:'login',
     data(){
@@ -85,7 +86,9 @@ export default {
                 password:'Clivia',
                 email:'Clivia@hotmail.com'
             }).then(()=>{
-                alert('注册成功');
+                // alert('注册成功');//👇
+                // Message.success('注册成功');
+                this.$message.success('注册成功');
             })
         }
     }
