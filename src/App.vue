@@ -18,8 +18,12 @@ export default {
     }
   },
   mounted(){
-    this.getUser();
-    this.getCartCount();
+    if(this.$cookie.get('userId')){
+      this.getUser();
+      this.getCartCount();
+    }
+    // this.getUser();
+    // this.getCartCount();
   },
   // 数据的拉取
   methods:{

@@ -12,9 +12,10 @@
                 </div>
                 <div class="topbar-user">
                     <a href="javascript:;" v-if="username">{{username}}</a>
-                    <a href="javascript:;" v-if="!username" @click="login()">登录</a>
+                    <a href="javascript:;" v-if="!username" @click="login">登录</a>
+                    <a href="javascript:;" v-if="username" @click="logout">退出</a>
                     <a href="javascript:;">我的订单</a>
-                    <a href="javascript:;" class="my-cart" @click="goToCart()"> <span class="icon-cart"></span> 购物车({{cartCount}})</a>
+                    <a href="javascript:;" class="my-cart" @click="goToCart"> <span class="icon-cart"></span> 购物车({{cartCount}})</a>
                 </div>
             </div>
         </div>
@@ -171,10 +172,36 @@ export default{
     },
     mounted(){
         this.getProductList();
+        // this.getCartCount(); //避免资源浪费，改写成👇
+        let params = this.$route.params;
+        if(params && params.from =='login' ){ //如果params为true,且是从login页面跳转过来的，再调用
+            this.getCartCount();
+        }
     },
     methods:{
         login(){
             this.$router.push('/login');
+        },
+        getCartCount(){
+            // this.axios.get('/carts/products/sum').then((res)=>{//未登录状态下res获取不到就可能会报错 所以需要给res一个默认值
+            this.axios.get('/carts/products/sum').then((res=0)=>{
+                //保存到vuex里面
+                this.$store.dispatch('saveCartCount',res);//这里直接写res是因为这个接口只返回 商品总数 这一个值
+            })
+        },
+        logout(){
+            // 清除登陆用户数据
+            this.axios.post('/user/logout').then(()=>{
+                //不需要返回值，只要能保证进到then这个方法中来，就能保证登出成功
+                this.$message.success('退出成功');//至此只是后台退出成功，后端数据清空
+                // 前端需要清除之前渲染进去的数据，可以对照着login.vue中保存的数据来清空
+                // 1. 清除cookie:userId，
+                //     - userid也可以叫做token,或是说应该叫做token，但本项目没有做加密，没涉及。
+                this.$cookie.set('userId','',{expires:'-1'});//设置为-1,即刻过期//之前cookie设置的过期时间是一个月，但实际上应该与后台的过期时间保持一致，
+                // 2. 清空vuex中保存的数据
+                this.$store.dispatch('saveUserName','');
+                this.$store.dispatch('saveCartCount','0');
+            })
         },
         getProductList(){
             //接口的名字

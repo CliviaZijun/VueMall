@@ -69,14 +69,28 @@ export default {
                 // this.res = res;
                 
                 // 用cookie保存用户id
-                this.$cookie.set('userId',res.id,{expires:'1M'});
+                this.$cookie.set('userId',res.id,{expires:'Session'});
                 // res就是接口返回来的结果
                 // 能进到then里就说明接口返回成功了，成功后使用push进行跳转，跳转到首页去
                 
                 // 保存用户名至Vuex
                 this.$store.dispatch('saveUserName',res.username);//方法名，所传参数
 
-                this.$router.push('/index');
+                // this.$router.push('/index');
+                // query传参的方法
+                /* this.$router.push({
+                    path:'/index',
+                    query:{
+                        from:'login'
+                    }
+                }); */
+                // params传参的方法
+                this.$router.push({
+                    name:'index',
+                    params:{
+                        from:'login'
+                    }
+                })
 
             })//这里如果担心报错的话可以继续.catch进行捕获，但其实不需要，因为在main.js中已经定义过接口错误拦截了
         },
