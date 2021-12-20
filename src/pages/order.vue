@@ -33,7 +33,7 @@ export default {
         // 获取当前路由地址
         let path = this.$route.path;//当前路由地址
         if(path == '/order/confirm'){
-            this.title = '确认订单';
+            this.title = '订单确认';
             this.tip = '请认真核对收货地址哦';
         }else if(path == '/order/list'){
             this.title = '订单列表';
