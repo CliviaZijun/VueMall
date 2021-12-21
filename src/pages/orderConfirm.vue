@@ -51,7 +51,7 @@
                                     </a>
                                 </div>
                             </div> -->
-                            <div class="addr-add">
+                            <div class="addr-add" @click="openAddressModal">
                                 <div class="icon-add"></div>
                                 <div>添加新地址</div>
                             </div>
@@ -121,6 +121,44 @@
                 <p>您确定要删除此地址吗？</p>
             </template>
         </modal>
+        <modal title="新增确认" btnType="1" :showModal="showEditModal" @cancel="showEditModal=false" @submit="submitAddress">
+            <template v-slot:body>
+                <div class="edit-wrap">
+                    <div class="item">
+                        <!-- 双向绑定：也是与react的一大区别 -->
+                        <input type="text" class="input" placeholder="姓名" v-model="checkedItem.receiverName"> <!-- 可以直接绑定receiverName，但是这样比较复杂，死板，不够灵活，我们可以将其缩减成一个对象，用之前定义的checkedItem对象对其统一设置 -->
+                        <input type="text" class="input" placeholder="手机号" v-model="checkedItem.receiverMobile">
+                    </div>
+                    <div class="item">
+                        <!-- 省市区的级联，做三个下拉框 -->
+                        <select name="province" v-model="checkedItem.receiverProvince"> <!-- 过去用jquery做的时候需要绑定id，vue就可以不用了 -->
+                            <option value="北京">北京</option>
+                            <option value="天津">天津</option>
+                            <option value="河北">河北</option>
+                        </select>
+                        <select name="city" v-model="checkedItem.receiverCity"> 
+                            <option value="北京">北京</option>
+                            <option value="天津">天津</option>
+                            <option value="河北">石家庄</option>
+                        </select>
+                        <select name="district" v-model="checkedItem.receiverDistrict"> 
+                            <option value="北京">昌平区</option>
+                            <option value="天津">海淀区</option>
+                            <option value="河北">东城区</option>
+                            <option value="天津">西城区</option>
+                            <option value="河北">顺义区</option>
+                            <option value="天津">房山区</option>
+                        </select>
+                    </div>
+                    <div class="item">
+                        <textarea name="street" v-model="checkedItem.receiverAddress"></textarea>
+                    </div>
+                    <div class="item">
+                        <input type="text" class="input" placeholder="邮编" v-model="checkedItem.receiverZip">
+                    </div>
+                </div>
+            </template>
+        </modal>
     </div>
 </template>
 <script>
@@ -133,10 +171,13 @@ export default {
             cartList:[],//购物车中需要结算的商品列表
             cartTotalPrice:0,//商品总金额
             countProduct:0, //结算商品总数
-
+            // 删除地址功能
             checkedItem:{},//选中的商品对象
             userAction:'',//用户行为：0：新增 1：编辑 2：删除
             showDelModal:false,//是否显示删除弹框
+            // 新增地址功能
+            showEditModal:false,//是否显示新增/编辑弹框
+
         }
     },
     // mounted👉生命周期的钩子
@@ -150,6 +191,11 @@ export default {
                 this.list = res.list;
             });
         },
+        openAddressModal(){
+            this.userAction = 0;
+            this.checkedItem = {};
+            this.showEditModal = true;
+        },
         delAddress(item){
             this.checkedItem = item;//保存要删除的对象
             this.userAction = 2;//删除事件
@@ -158,7 +204,7 @@ export default {
         // 地址删除、编辑、新增功能
         submitAddress(){
             let {checkedItem,userAction} = this;
-            let method,url;
+            let method,url,params={};
             if(userAction == 0){
                 method = 'post', url = '/shippings';
             }else if(userAction == 1){
@@ -166,7 +212,46 @@ export default {
             }else{
                 method = 'delete', url = `/shippings/${checkedItem.id}`;
             }
-            this.axios[method](url).then(()=>{// 不需要返回值，删除成功就成功了
+            if(userAction == 0 || userAction == 1){
+                let {receiverName,receiverMobile,receiverProvince, receiverCity,receiverDistrict,receiverAddress,receiverZip} = checkedItem;
+                let errMsg='';
+                if(!receiverName){
+                    errMsg = '请输入收货人名称';
+                }else if(!receiverMobile || !/\d{11}/.test(receiverMobile)){
+                    errMsg = '请输入正确格式的手机号码';
+                }else if(!receiverProvince){
+                    errMsg = '请选择省份';
+                }else if(!receiverCity){
+                    errMsg = '请选择对应的城市';
+                }else if(!receiverAddress || !receiverDistrict){
+                    errMsg = '请输入收货地址';
+                }else if(!/\d{6}/.test(receiverZip)){
+                    errMsg = '请输入六位邮编';
+                }
+                if(errMsg){
+                    this.$message.error(errMsg);
+                    return;
+                }
+                params = {
+                    /* // 如果不需要校验，可以直接定义，更简洁
+                    receiverName: checkedItem.receiverName,
+                    receiverMobile: checkedItem.receiverMobile,
+                    receiverProvince: checkedItem.receiverProvince,
+                    receiverCity: checkedItem.receiverCity,
+                    receiverDistrict: checkedItem.receiverDistrict,
+                    receiverAddress: checkedItem.receiverAddress,
+                    receiverZip: checkedItem.receiverZip */
+                    // 但是为了方便校验，还是采用了解构的方式
+                    receiverName,
+                    receiverMobile,
+                    receiverProvince,
+                    receiverCity,
+                    receiverDistrict,
+                    receiverAddress,
+                    receiverZip
+                }
+            }
+            this.axios[method](url,params).then(()=>{// 不需要返回值，删除成功就成功了
                 this.closeModal();
                 this.getAddressList();//重新拉取一次，避免并发带来的问题
                 this.$message.success('操作成功');
@@ -178,6 +263,7 @@ export default {
             this.checkedItem = {};
             this.userAction = '';
             this.showDelModal = false;
+            this.showEditModal = false;
         },
         getCartList(){
             this.axios.get('/carts').then((res)=>{
@@ -346,6 +432,36 @@ export default {
             .btn-group{
                 margin-top: 37px;
                 text-align: right;
+            }
+        }
+        .edit-wrap{
+            font-size: $fontJ;
+            .item{
+                margin-bottom: 15px;
+                .input{
+                    display: inline-block;
+                    width:281px;//原本是283px，结果手机号的input突然出界下移了，不知为何，待明天重新开机看看。
+                    height: 40px;
+                    line-height: 40px;
+                    padding-left: 15px;
+                    border: 1px solid #e5e5e5;
+                    &+.input{ //兄弟元素
+                        margin-left: 14px;
+                    }
+                }
+                select{
+                    height: 40px;
+                    line-height: 40px;
+                    border: 1px solid #e5e5e5;
+                    margin-right: 15px;
+                }
+                textarea{
+                    height: 62px;
+                    width: 100%;
+                    box-sizing: border-box;
+                    padding: 13px 15px;
+                    border: 1px solid #e5e5e5;
+                }
             }
         }
     }
