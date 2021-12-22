@@ -25,7 +25,7 @@
                     <div class="item-address">
                         <h2 class="addr-title">收货地址</h2>
                         <div class="addr-list clearfix">
-                            <div class="addr-info" v-for="(item,index) in list" :key="index"> <!-- list指的是地址列表 -->
+                            <div class="addr-info" :class="{'checked':index == checkIndex}"  @click="checkIndex = index" v-for="(item,index) in list" :key="index"> <!-- list指的是地址列表 -->
                                 <h2>{{item.receiverName}}</h2>
                                 <div class="phone">{{item.receiverMobile}}</div>
                                 <div class="street">{{item.receiverProvince + ' ' + item.receiverCity + ' ' + item.receiverDistrict + ' ' + item.receiverAddress}}</div>
@@ -33,7 +33,7 @@
                                     <a href="javascript:;" class="fl" @click="delAddress(item)">
                                         <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                                     </a>
-                                    <a href="javascript:;" class="fr">
+                                    <a href="javascript:;" class="fr" @click="editAddressModal(item)">
                                         <svg class="icon icon-edit"><use xlink:href="#icon-edit"></use></svg>
                                     </a>
                                 </div>
@@ -111,7 +111,7 @@
                     </div>
                     <div class="btn-group">
                         <a href="/#/cart" class="btn btn-default btn-large">返回购物车</a>
-                        <a href="javascript:;" class="btn btn-large">去结算</a>
+                        <a href="javascript:;" class="btn btn-large" @click="orderSubmit">去结算</a>
                     </div>
                 </div>
             </div>
@@ -139,15 +139,15 @@
                         <select name="city" v-model="checkedItem.receiverCity"> 
                             <option value="北京">北京</option>
                             <option value="天津">天津</option>
-                            <option value="河北">石家庄</option>
+                            <option value="石家庄">石家庄</option>
                         </select>
                         <select name="district" v-model="checkedItem.receiverDistrict"> 
-                            <option value="北京">昌平区</option>
-                            <option value="天津">海淀区</option>
-                            <option value="河北">东城区</option>
-                            <option value="天津">西城区</option>
-                            <option value="河北">顺义区</option>
-                            <option value="天津">房山区</option>
+                            <option value="昌平区">昌平区</option>
+                            <option value="海淀区">海淀区</option>
+                            <option value="东城区">东城区</option>
+                            <option value="西城区">西城区</option>
+                            <option value="顺义区">顺义区</option>
+                            <option value="房山区">房山区</option>
                         </select>
                     </div>
                     <div class="item">
@@ -177,7 +177,8 @@ export default {
             showDelModal:false,//是否显示删除弹框
             // 新增地址功能
             showEditModal:false,//是否显示新增/编辑弹框
-
+            // 当前选中的收货地址的索引，默认选中第一个
+            checkIndex:0
         }
     },
     // mounted👉生命周期的钩子
@@ -194,6 +195,11 @@ export default {
         openAddressModal(){
             this.userAction = 0;
             this.checkedItem = {};
+            this.showEditModal = true;
+        },
+        editAddressModal(item){
+            this.userAction = 1;
+            this.checkedItem = item;
             this.showEditModal = true;
         },
         delAddress(item){
@@ -273,6 +279,27 @@ export default {
                 this.cartList.map((item)=>{
                     this.countProduct += item.quantity;
                 });
+            })
+        },
+        // 订单提交
+        orderSubmit(){
+            // 先判断有没有选择地址
+            // 虽然默认选择第一个地址，但是当用户选中最后一个地址并删掉后，此时的checkIndex并没有对应的地址，也就是说此时没有选中地址
+            let item = this.list[this.checkIndex];
+            if(!item){// 当前地址不存在
+                this.$message.error('请选择一个收货地址');
+                return;
+            }
+            // 正式生成订单并跳转至支付页面
+            this.axios.post('/orders',{
+                shippingId:item.id
+            }).then((res)=>{
+                this.$router.push({
+                    path:'/order/pay',
+                    query:{
+                        orderNo:res.orderNo
+                    }
+                })
             })
         }
     },
