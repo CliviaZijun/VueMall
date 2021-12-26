@@ -11,7 +11,7 @@
                             <p>收货信息：{{addressInfo}}</p>
                         </div>
                         <div class="order-total">
-                            <p>应付总额：<span>2599</span>元</p>
+                            <p>应付总额：<span>{{payment}}</span>元</p>
                             <p>订单详情<em class="icon-down" :class="{'up':showDetail}" @click="showDetail = !showDetail"></em></p>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                             <div class="detail-info">
                                 <ul>
                                     <li v-for="(item,index) in orderDetail" :key="index">
-                                        <img v-lazy="item.productImage" alt="">{{item.productName}}
+                                        <img v-lazy="item.productImage" alt="">{{item.productName}}×{{item.quantity}}
                                     </li>
                                     <!-- <li><img v-lazy="'/imgs/item-box-1.png'" alt="">小米CC9</li>
                                     <li><img src="https://cdn.cnbj0.fds.api.mi-img.com/b2c-mimall-media/2c9307e9690dfbca39d8de770a7a8664.png" alt="">小米8 青春 全网通版 6GB内存 深空灰 64GB</li>
@@ -56,11 +56,25 @@
         <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg"></scan-pay-code>
         <!-- 这里关闭事件就不能用@click绑定了，要通过自定义事件，直接@方法名，这样才能接收子组件所传递过来的 -->
         <!-- :img是因为子组件定义的名称叫img, 要将本父组件的payImg传递给子组件 -->
+        <modal
+            title="支付确认"
+            btnType="3"
+            :showModal="showPayModal"
+            sureText="查看订单"
+            cancelText="未支付"
+            @cancel="showPayModal = false" 
+            @submit="goOrderList"
+        >
+            <template v-slot:body>
+                <p>是否已完成支付？</p>
+            </template>
+        </modal>
     </div>
 </template>
 <script>
 import QRCode from 'qrcode';
-import ScanPayCode from './../components/ScanPayCode.vue'
+import ScanPayCode from './../components/ScanPayCode.vue';
+import Modal from './../components/Modal.vue';
 export default {
     name:'order-pay',
     data(){
@@ -68,14 +82,18 @@ export default {
             orderId:this.$route.query.orderNo,//一进页面就可以取到的内容
             addressInfo:'',//收货人地址信息
             orderDetail:[],//订单详情，包含了商品列表
+            payment:0,//支付总金额
             showDetail:false,//是否显示订单详情
             payType:'',//支付类型
             showPay:false,//是否显示微信支付弹框
-            payImg:''//微信支付的二维码地址
+            payImg:'',//微信支付的二维码地址
+            showPayModal:false,//是否显示二次支付确认弹框
+            T:'',//定时器ID，单独声明它是为了既可以使用也可以取消
         }
     },
     components:{
         ScanPayCode,
+        Modal,
     },
     mounted(){
         // 根据订单号获取商品数据
@@ -89,6 +107,7 @@ export default {
                 let item = res.shippingVo;
                 this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`;
                 this.orderDetail = res.orderItemVoList;
+                this.payment = res.payment;
             })
         },
         paySubmit(payType){
@@ -107,6 +126,7 @@ export default {
                     .then(url => {
                         this.showPay = true;
                         this.payImg = url;
+                        this.loopOrderState();//生成二维码后开始轮询
                     })
                     .catch(() => {
                         this.$message.error('微信二维码生成失败，请稍后重试');
@@ -114,12 +134,27 @@ export default {
                 })
             }
         },
+        goOrderList(){
+            this.$router.push('/order/list');
+        },
         // 关闭微信弹框
         closePayModal(){
             this.showPay = false;
+            this.showPayModal = true;
+            clearInterval(this.T);// 同样地，若用户关闭二维码也需要关闭定时器
+        },
+        //轮询当前订单支付状态 
+        loopOrderState(){
+            this.T = setInterval(() => {
+                this.axios.get(`/orders/${this.orderId}`).then((res)=>{
+                    if(res.status == 20){  //若已支付
+                        clearInterval(this.T);//清掉定时器
+                        this.goOrderList();//自动跳转到订单列表
+                    }
+                })
+            }, 1000);//通常设置500ms 或者 1s都是比较合理的
         }
     }
-
 }
 </script>
 <style lang="scss">
