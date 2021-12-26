@@ -18,7 +18,7 @@
                     <div class="item-detail" v-if="showDetail">
                         <div class="item">
                             <div class="detail-title">订单号：</div>
-                            <div class="detail-info theme-color">{{orderNo}}</div>
+                            <div class="detail-info theme-color">{{orderId}}</div>
                         </div>
                         <div class="item">
                             <div class="detail-title">收货信息：</div>
@@ -53,20 +53,29 @@
                 </div>
             </div>
         </div>
-        
+        <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg"></scan-pay-code>
+        <!-- 这里关闭事件就不能用@click绑定了，要通过自定义事件，直接@方法名，这样才能接收子组件所传递过来的 -->
+        <!-- :img是因为子组件定义的名称叫img, 要将本父组件的payImg传递给子组件 -->
     </div>
 </template>
 <script>
+import QRCode from 'qrcode';
+import ScanPayCode from './../components/ScanPayCode.vue'
 export default {
     name:'order-pay',
     data(){
         return {
-            orderNo:this.$route.query.orderNo,//一进页面就可以取到的内容
+            orderId:this.$route.query.orderNo,//一进页面就可以取到的内容
             addressInfo:'',//收货人地址信息
             orderDetail:[],//订单详情，包含了商品列表
             showDetail:false,//是否显示订单详情
             payType:'',//支付类型
+            showPay:false,//是否显示微信支付弹框
+            payImg:''//微信支付的二维码地址
         }
+    },
+    components:{
+        ScanPayCode,
     },
     mounted(){
         // 根据订单号获取商品数据
@@ -75,7 +84,7 @@ export default {
     methods:{
         getOrderDetail(){
             // 取到orderNo后，发请求，调用接口拉取订单详情
-            this.axios.get(`/orders/${this.orderNo}`).then((res)=>{//动态路由
+            this.axios.get(`/orders/${this.orderId}`).then((res)=>{//动态路由
                 // 接口的订单信息
                 let item = res.shippingVo;
                 this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`;
@@ -85,8 +94,29 @@ export default {
         paySubmit(payType){
             this.payType = payType;
             if(payType == 1){
-                window.open('/#/order/alipay?orderId='+this.orderNo,'_blank');
+                window.open('/#/order/alipay?orderId='+this.orderId,'_blank');
+            }else{
+                this.axios.post('/pay',{
+                    orderId:this.orderId,
+                    orderName:'苞米商城',
+                    amount:0.01,
+                    payType:2
+                }).then((res)=>{
+                    //通过toDataURL转换成Base64的语法，webpack会把一些小的icon转换成base64，好处是减少请求，不会有真实的图片地址，只是一个非常长的64位的字符串，这样前端访问时就不需要再去耗带宽地拉取图片请求了
+                    QRCode.toDataURL(res.content)
+                    .then(url => {
+                        this.showPay = true;
+                        this.payImg = url;
+                    })
+                    .catch(() => {
+                        this.$message.error('微信二维码生成失败，请稍后重试');
+                    })
+                })
             }
+        },
+        // 关闭微信弹框
+        closePayModal(){
+            this.showPay = false;
         }
     }
 
