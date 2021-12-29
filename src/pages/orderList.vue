@@ -46,6 +46,38 @@
                             </div>
                         </div>
                     </div>
+                    <!-- ⭐1.分页器 -->
+                    <el-pagination class="pagination"
+                        background
+                        layout="prev, pager, next"
+                        :pageSize="pageSize"
+                        :total="total"
+                        @current-change="handleChange"
+                        >
+                    </el-pagination>
+                    <!-- ⭐2.按钮加载更多 -->
+                    <div class="load-more" 
+                        v-if="false"
+                    >
+                        <el-button
+                            type="primary"
+                            :loading="loading"
+                            v-show="showNextPage"
+                            @click="loadMore"
+                        >
+                            加载更多
+                        </el-button>
+                    </div>
+                    <!-- ⭐3.滚动加载 -->
+                    <div class="scroll-more" 
+                        v-if="false"
+                        v-infinite-scroll="scrollMore"
+                        infinite-scroll-disabled="busy"
+                        infinite-scroll-distance="410"
+                    >
+                    <!-- busy:true时停止滚动，false时释放 -->
+                        <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" alt="" v-show="loading">
+                    </div>
                     <no-data v-if="!loading && list.length==0"></no-data>
                 </div>
             </div>
@@ -56,17 +88,29 @@
 import OrderHeader from './../components/OrderHeader.vue';
 import Loading from './../components/Loading.vue';
 import NoData from './../components/NoData.vue';
+import {Pagination,Button} from 'element-ui';//⭐1&2.分页器 & 按钮加载更多
+import infiniteScroll from 'vue-infinite-scroll';//⭐3. 滚动加载
 export default {
     name:'order-list',
     components:{//注册
         OrderHeader,
         Loading,
-        NoData
+        NoData,
+        [Pagination.name]:Pagination, //⭐1.分页器 动态加载变量，[Pagination.name]会获取到el-pagination，把它解析成一个字符串，然后加载组件，就可以了。
+        [Button.name]:Button//⭐2.按钮加载更多
     },
+    directives:{
+        infiniteScroll
+    },//⭐3.滚动加载更多
     data(){
         return{
-            loading:true,
-            list:[]
+            loading:true,//如果使用滚动和按钮加载更多，默认值应设为false，否则loading动画重复
+            list:[],
+            pageSize:10,
+            pageNum:1,
+            total:0,
+            showNextPage:true,//⭐2.按钮加载更多是否显示按钮
+            busy:false,//⭐3.滚动加载是否触发，默认会触发滚动
         }
     },
     mounted(){
@@ -74,10 +118,17 @@ export default {
     },
     methods:{
         getOrderList(){
-            this.axios.get('/orders').then((res)=>{
+            this.busy = true;//⭐3.滚动加载 初次加载订单列表时禁用滚动加载，以防一上来就加载两页
+            this.axios.get('/orders',{
+                params:{
+                    pageNum:this.pageNum
+                }
+            }).then((res)=>{
                 this.loading = false;
                 this.list = res.list;
-            }).catich(()=>{
+                this.total = res.total;
+                this.busy = false;//⭐3.滚动加载 初次加载完毕后再放开滚动加载
+            }).catch(()=>{
                 this.loading = false;
             })
         },
@@ -96,7 +147,57 @@ export default {
                     orderNo
                 }
             }) */
-        }
+        },
+        // ⭐1.分页器
+        handleChange(pageNum){
+            this.pageNum = pageNum;
+            this.getOrderList();
+        },
+        // ⭐2.按钮加载更多
+        loadMore(){
+            this.pageNum++;
+            this.buttonGetList();
+        },
+        // ⭐3.滚动加载更多
+        scrollMore(){
+            this.busy=true;
+            setTimeout(()=>{
+                this.pageNum++;
+                this.scrollGetList();
+            },500);
+        },
+        // ⭐2.按钮加载更多所使用的获取订单列表方法
+        buttonGetList(){
+            this.loading = true;
+            this.axios.get('/orders',{
+                params:{
+                    pageSize:10,
+                    pageNum:this.pageNum
+                }
+            }).then((res)=>{
+                this.loading = false;
+                this.list = this.list.concat(res.list);
+                this.showNextPage = res.hasNextPage;
+            })
+        },
+        // ⭐3.滚动加载更多所使用的获取订单列表方法
+        scrollGetList(){
+            this.loading = true;
+            this.axios.get('/orders',{
+                params:{
+                    pageSize:10,
+                    pageNum:this.pageNum
+                }
+            }).then((res)=>{
+                this.list = this.list.concat(res.list);
+                if(res.hasNextPage){
+                    this.busy = false;
+                }else{
+                    this.busy = true;
+                    this.loading = false;
+                }
+            })
+        },
     }
 }
 </script>
@@ -147,7 +248,8 @@ export default {
                                     }
                                 }
                                 .goods-name{
-                                    font-size: $fontG;
+                                    margin-left: 10px;
+                                    font-size: $fontH;
                                     color: $colorB;
                                 }
                             }
@@ -161,6 +263,20 @@ export default {
                             }
                         }
                     }
+                }
+                .pagination{
+                    text-align: right;
+
+                }
+                .el-pagination.is-background .el-pager li:not(.disabled).active {
+                    background-color: $colorA;
+                }
+                .el-button--primary {
+                    background-color: $colorA;
+                    border-color: $colorA;
+                }
+                .scroll-more,.load-more{
+                    text-align: center;
                 }
             }
         }
