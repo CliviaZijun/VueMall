@@ -3,7 +3,7 @@ import Router from 'vue-router'
 //引用页面
 import Home from './pages/home'// './pages/Home.vue'  .vue可以省略
 import Index from './pages/index'
-import Product from './pages/product'
+/* import Product from './pages/product'
 import Detail from './pages/detail'
 import Login from './pages/login'
 import Cart from './pages/cart'
@@ -11,7 +11,7 @@ import Order from './pages/order'
 import OrderConfirm from './pages/orderConfirm'
 import OrderList from './pages/orderList'
 import OrderPay from './pages/orderPay'
-import AliPay from './pages/alipay'
+import AliPay from './pages/alipay' */
 
 //加载插件
 Vue.use(Router);
@@ -38,18 +38,22 @@ export default new Router({
                     name:'index',
                     component:Index
                 },
-                //产品栈
+                //产品站
                 {
                     //每个商品都要有一个商品ID，因此子路由还是一个动态路由
                     path:'/product/:id',//←动态定义路由的一种语法，冒号后面的名字可以随意起 不一定是id
                     name:'product',
-                    component:Product
+                    // component:Product
+                    // 第一种按需加载方式
+                    component: resolve => require(['./pages/product.vue'],resolve)
                 },
                 //商品详情
                 {
                     path:'/detail/:id',
                     name:'detail',
-                    component:Detail
+                    // component:Detail
+                    // 第一种按需加载方式
+                    component: resolve => require(['./pages/detail.vue'],resolve)
                 }
             ]
         },
@@ -58,40 +62,54 @@ export default new Router({
         {
             path:'/login',
             name:'login',
-            component:Login
+            // component:Login
+            // 第一种按需加载方式
+            component: resolve => require(['./pages/login.vue'],resolve)
         },
         //购物车
         {
             path:'/cart',
             name:'cart',
-            component:Cart
+            // component:Cart
+            // 第一种按需加载方式
+            component: resolve => require(['./pages/cart.vue'],resolve)
         },
         //订单
         {
             path:'/order',
             name:'order',
-            component:Order,
+            // component:Order,
+            // 第一种按需加载方式
+            component: resolve => require(['./pages/order.vue'],resolve),
             children:[
                 {
                     path:'list',
                     name:'order-list',
-                    component:OrderList
+                    // component:OrderList
+                    // 第一种按需加载方式
+                    component: resolve => require(['./pages/orderList.vue'],resolve)
                 },
                 {
                     path:'confirm',
                     name:'order-confirm',
-                    component:OrderConfirm
+                    // component:OrderConfirm
+                    // 第一种按需加载方式
+                    component: resolve => require(['./pages/orderConfirm.vue'],resolve)
                 },
                 {
                     path:'pay',
                     name:'order-pay',
-                    component:OrderPay
+                    // component:OrderPay
+                    // 第一种按需加载方式
+                    component: resolve => require(['./pages/orderPay.vue'],resolve)
                 },
                 //alipay只是一个中间页，可以暂时作为order的一个子路由
                 {
                     path:'alipay',
                     name:'alipay',
-                    component:AliPay
+                    // component:AliPay
+                    // 第一种按需加载方式
+                    component: resolve => require(['./pages/alipay.vue'],resolve)
                 }
             ]
         }
