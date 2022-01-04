@@ -64,7 +64,9 @@ export default new Router({
             name:'login',
             // component:Login
             // 第一种按需加载方式
-            component: resolve => require(['./pages/login.vue'],resolve)
+            // component: resolve => require(['./pages/login.vue'],resolve)
+            // 第二种按需加载方式
+            component: () => import('./pages/login.vue')
         },
         //购物车
         {
@@ -80,14 +82,18 @@ export default new Router({
             name:'order',
             // component:Order,
             // 第一种按需加载方式
-            component: resolve => require(['./pages/order.vue'],resolve),
+            // component: resolve => require(['./pages/order.vue'],resolve),
+            // 第二种按需加载方式
+            component: () => import('./pages/order.vue'),
             children:[
                 {
                     path:'list',
                     name:'order-list',
                     // component:OrderList
                     // 第一种按需加载方式
-                    component: resolve => require(['./pages/orderList.vue'],resolve)
+                    // component: resolve => require(['./pages/orderList.vue'],resolve)
+                    // 第二种按需加载方式
+                    component: () => import('./pages/orderList.vue')
                 },
                 {
                     path:'confirm',
